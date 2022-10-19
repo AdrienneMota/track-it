@@ -1,9 +1,15 @@
+import Login from "./pages/Login";
+import GlobalStyled from "./assets/styled/GlobalStyled"
+import Cadastro from "./pages/Cadastro"
+
 function App() {
   return (
-    <div>
-      Track It...
-    </div>
-  );
+    <>
+      <GlobalStyled/>
+      {/* <Login/>    */}
+      <Cadastro/>
+    </>
+ );
 }
 
 export default App;
