@@ -76,5 +76,9 @@ a{
         font-size: 16px;
         color: #52B6FF;
 }
+
+form{
+        margin-left: 38px;
+}
 `
 export default GlobalStyled
