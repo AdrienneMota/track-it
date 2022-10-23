@@ -3,7 +3,7 @@ import Logo from "../components/Logo"
 import { PageContainer } from "../components/PageContainer"
 import axios from "axios"
 import { useState } from "react"
-import { BASEURL } from "../components/PageContainer"
+import {BASEURL} from "../constant/urls"
 
 
 export default function Cadastro(){
@@ -43,7 +43,7 @@ export default function Cadastro(){
                     onChange={handleForm}
                 />
                 <input 
-                    type="text" 
+                    type="password" 
                     placeholder="senha"
                     name="password"
                     value={form.password}
@@ -57,7 +57,7 @@ export default function Cadastro(){
                     onChange={handleForm}
                 />
                 <input 
-                    type="text" 
+                    type="url" 
                     placeholder="foto"
                     name="image"
                     value={form.image}
