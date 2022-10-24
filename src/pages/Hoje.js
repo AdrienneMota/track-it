@@ -9,6 +9,23 @@ import { BASEURL } from "../constant/urls"
 export default function Hoje(){
     const token = localStorage.getItem("token")
     const [habitoshoje, setHabitoshoje] = useState(undefined)
+    const daysweek = ["Domingo", "Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"]
+    const d = new Date()
+    let day = daysweek[d.getDay()]
+    const dataFormatada = () => {
+        const data = new Date();
+        const dia = data.getDate();
+        if (dia.toString().length == 1){
+            dia = "0"+dia;
+        }
+        const mes = data.getMonth()+1;
+        if (mes.toString().length == 1){
+            mes = "0"+mes;
+        }
+        const ano = data.getFullYear();  
+        
+        return dia+"/"+mes+"/"+ano;
+    }
 
     useEffect( () => {
         axios.get(`${BASEURL}/habits/today`, { headers : {"Authorization" : `Bearer ${JSON.parse(token)}`}})
@@ -18,6 +35,18 @@ export default function Hoje(){
             .catch((err) => console.log(err.response.data))
     }, [habitoshoje])
 
+    function concluirAtividade(id, done){
+        if(done){
+            axios.post(`${BASEURL}/habits/${id}/uncheck`, {} , { headers : {"Authorization" : `Bearer ${JSON.parse(token)}`}})
+            .then( (res) => console.log("habito desmarcado"))
+            .catch((err) => alert("Erro: "+err.response.data))
+
+        }else{
+        axios.post(`${BASEURL}/habits/${id}/check`, {} , { headers : {"Authorization" : `Bearer ${JSON.parse(token)}`}})
+            .then( (res) => console.log("habito marcado"))
+            .catch((err) => alert("Erro: "+err.response.data))
+        }
+    }
 
     if(!habitoshoje){
         return <div>Carregando habitos de hoje</div>
@@ -27,7 +56,7 @@ export default function Hoje(){
         <PageUser>
             <Navbar/>
             <Day>
-                <p>Segunda, dd/mm/aaaa</p>
+                <p>{day}, {dataFormatada()}</p>
                 <span>Nenhum habito concluido</span>
             </Day>
             {
@@ -40,9 +69,9 @@ export default function Hoje(){
                                 <p>Seu recorde: {h.highestSequence} dias</p>
                             </Detalhes>
                         </div>
-                        <button>
-                            <img src={certo} alt="certo"/>
-                        </button>
+                        <Button check={h.done} >
+                            <img src={certo} onClick={() => concluirAtividade(h.id, h.done)} alt="certo"/>
+                        </Button>
                 </Habito>
                 )
             }       
@@ -55,7 +84,6 @@ const Day = styled.div`
     margin-left: 0px;
     width: 340px;
 `
-
 const Habito = styled.div`
     margin-top: 28px;
     background-color: #ffffff;
@@ -65,16 +93,16 @@ const Habito = styled.div`
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
-    button{
-        width: 69px;
-        height: 69px;
-        margin-top: 11px;
-        margin-right: 10px;
-        background-color: #EBEBEB;
-    } 
     p{
         margin: 10px;
     }   
+`
+const Button = styled.button`
+    width: 69px;
+    height: 69px;
+    margin-top: 11px;
+    margin-right: 10px;
+    background-color: ${prop => prop.check? "#8FC549" :"#EBEBEB"};
 `
 const Detalhes = styled.div`
     font-size: 13px;
