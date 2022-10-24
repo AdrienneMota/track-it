@@ -6,6 +6,7 @@ export const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100%;
 `
 export const PageUser = styled.div`
     width: 375px;
@@ -13,5 +14,5 @@ export const PageUser = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    height: 1000px;
 `

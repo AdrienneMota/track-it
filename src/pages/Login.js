@@ -31,7 +31,7 @@ export default function Login(){
                 setToken(res.data.token)
                 localStorage.setItem("image", JSON.stringify(res.data.image))
                 setImage(res.data.image)
-                navigate('/habitos')
+                navigate('/hoje')
             })
             .catch( err => alert(err.response.data))
     }
