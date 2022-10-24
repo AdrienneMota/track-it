@@ -5,6 +5,8 @@ export const AuthContext = React.createContext({})
 export const AuthProvider = (props) => {
     const [image, setImage] = useState("")
     const [token, setToken] = useState("")
+    const [concluidos, setConcluidos] = useState(0)
+    const [total, setTotal] = useState(0)
 
     useEffect(() => {
         const imgStorage = localStorage.getItem("image")
@@ -12,14 +14,24 @@ export const AuthProvider = (props) => {
             setImage(JSON.parse(imgStorage))
         }
 
+        const concluidoStorage = localStorage.getItem("concluidos")
+        if(concluidoStorage){
+            setConcluidos(JSON.parse(concluidoStorage))
+        }
+
+        const totalStorage = localStorage.getItem("total")
+        if(totalStorage){
+            setTotal(JSON.parse(totalStorage))
+        }
+
         const tokenStorage = localStorage.getItem("token")
-        if(token){
+        if(tokenStorage){
             setToken(JSON.parse(tokenStorage))
         }
     }, [])
 
     return(
-        <AuthContext.Provider value ={{image, setImage, token, setToken}}>
+        <AuthContext.Provider value ={{image, setImage, token, setToken, concluidos, setConcluidos, total, setTotal}}>
             {props.children}
         </AuthContext.Provider>
     )

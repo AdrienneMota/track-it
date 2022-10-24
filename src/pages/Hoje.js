@@ -5,9 +5,12 @@ import certo from "../assets/img/certo.png"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { BASEURL } from "../constant/urls"
+import Footer from "../components/Footer"
+import { useAuth } from "../context/auth"
 
 export default function Hoje(){
     const token = localStorage.getItem("token")
+    const {setTotal} = useAuth()
     const [habitoshoje, setHabitoshoje] = useState(undefined)
     const daysweek = ["Domingo", "Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"]
     const d = new Date()
@@ -26,11 +29,15 @@ export default function Hoje(){
         
         return dia+"/"+mes+"/"+ano;
     }
+    const {setConcluidos} = useAuth()
+    let contador = 0;
 
     useEffect( () => {
         axios.get(`${BASEURL}/habits/today`, { headers : {"Authorization" : `Bearer ${JSON.parse(token)}`}})
             .then((res) => {
                 setHabitoshoje(res.data)
+                localStorage.setItem("total", JSON.stringify(res.data.length))
+                setTotal(res.data.length)
             })
             .catch((err) => console.log(err.response.data))
     }, [habitoshoje])
@@ -40,11 +47,17 @@ export default function Hoje(){
             axios.post(`${BASEURL}/habits/${id}/uncheck`, {} , { headers : {"Authorization" : `Bearer ${JSON.parse(token)}`}})
             .then( (res) => console.log("habito desmarcado"))
             .catch((err) => alert("Erro: "+err.response.data))
+            contador = contador - 1
+            localStorage.setItem("concluidos", JSON.stringify(contador))
+            setConcluidos(contador)
 
         }else{
         axios.post(`${BASEURL}/habits/${id}/check`, {} , { headers : {"Authorization" : `Bearer ${JSON.parse(token)}`}})
             .then( (res) => console.log("habito marcado"))
             .catch((err) => alert("Erro: "+err.response.data))
+            contador = contador + 1
+            localStorage.setItem("concluidos", JSON.stringify(contador))
+            setConcluidos(contador)
         }
     }
 
@@ -57,7 +70,7 @@ export default function Hoje(){
             <Navbar/>
             <Day>
                 <p>{day}, {dataFormatada()}</p>
-                <span>Nenhum habito concluido</span>
+                <span>{contador} habitos concluidos</span>
             </Day>
             {
                 habitoshoje.map( (h, i) =>
@@ -65,8 +78,16 @@ export default function Hoje(){
                         <div>
                             <p>{h.name}</p>
                             <Detalhes>
-                                <p>Sequencia atual: {h.currentSequence} dias</p>
-                                <p>Seu recorde: {h.highestSequence} dias</p>
+                                <span>
+                                    <p>Sequencia atual: </p> 
+                                    <Sequenciatual verde={h.done}>
+                                        {h.currentSequence} dias
+                                    </Sequenciatual>
+                                </span>
+                                <span>                                
+                                    <p>Seu recorde: </p> 
+                                    <Recorde verde = {(h.highestSequence === h.currentSequence)}>{h.highestSequence} dias</Recorde>
+                                </span>
                             </Detalhes>
                         </div>
                         <Button check={h.done} >
@@ -74,7 +95,8 @@ export default function Hoje(){
                         </Button>
                 </Habito>
                 )
-            }       
+            } 
+            <Footer/>      
         </PageUser>
     )
 }
@@ -94,7 +116,7 @@ const Habito = styled.div`
     display: flex;
     justify-content: space-between;
     p{
-        margin: 10px;
+        margin: 8px;
     }   
 `
 const Button = styled.button`
@@ -106,4 +128,13 @@ const Button = styled.button`
 `
 const Detalhes = styled.div`
     font-size: 13px;
+    span{
+        display: flex;
+    }
+`
+const Sequenciatual = styled.p`
+    color: ${prop => prop.verde? "#8FC549":"#666666"};
+`
+const Recorde = styled.p`
+    color: ${prop => prop.verde? "#8FC549":"#666666"};
 `

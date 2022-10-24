@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { BASEURL } from "../constant/urls"
 import lixo from "../assets/img/lixeira.png"
+import Footer from "../components/Footer"
 
 export default function Habitos() {
     const [cadastro, setCadastro] = useState(false)
@@ -56,6 +57,7 @@ export default function Habitos() {
 
                 )
             }
+            <Footer/>
         </PageUser>
     )
 }

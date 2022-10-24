@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { useAuth } from "../context/auth"
 
+
 export default function Navbar(){
     const {image} = useAuth()
     return(
