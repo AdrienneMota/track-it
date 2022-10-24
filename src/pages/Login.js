@@ -7,11 +7,12 @@ import { BASEURL } from "../constant/urls"
 import { useAuth } from "../context/auth"
 
 
-export default function Login({setToken}){
+export default function Login(){
     
     const [form, setForm] = useState({email: "", password: ""})
     const navigate = useNavigate()
     const {setImage} = useAuth()
+    const {setToken} = useAuth()
 
     function handleSubmit(e){
         const {name, value} = e.target // pega tudo de event e desestrutura o name e value
@@ -26,10 +27,11 @@ export default function Login({setToken}){
         axios.post(`${BASEURL}/auth/login`, form)
             .then(res => {
                 console.log(res.data)
+                localStorage.setItem("token", JSON.stringify(res.data.token))
                 setToken(res.data.token)
-                navigate('/habitos')
                 localStorage.setItem("image", JSON.stringify(res.data.image))
                 setImage(res.data.image)
+                navigate('/habitos')
             })
             .catch( err => alert(err.response.data))
     }

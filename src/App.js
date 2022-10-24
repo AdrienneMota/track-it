@@ -12,14 +12,13 @@ import Historico from "./pages/Historico";
 
 
 function App() {
-  const [token, setToken] = useState("")
   const {image} = useAuth();
   
   return (
     <BrowserRouter>
       <GlobalStyled/>
       <Routes>
-        <Route path="/" element={<Login setToken={setToken}/>}/>
+        <Route path="/" element={<Login/>}/>
         <Route path="/cadastro" element={<Cadastro/>}/>
         <Route path="/habitos" element={<Habitos/>}/>
         <Route path="/hoje" element={<Hoje/>}/>

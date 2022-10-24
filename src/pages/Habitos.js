@@ -1,16 +1,34 @@
 import { PageUser } from "../components/PageContainer"
 import Navbar from "../components/Navbar"
 import styled from "styled-components"
+import CadastroHabito from "../components/CadastroHabito"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { BASEURL } from "../constant/urls"
+
 
 export default function Habitos(){
+    const [cadastro, setCadastro] = useState(false)
+    const token = localStorage.getItem("token")
+    const [habitos, setHabitos] = useState([])
+
+    useEffect( () => {
+        axios.get(`${BASEURL}/habits`, {headers: {'Authorization': `Bearer ${JSON.parse(token)}`}})
+            .then((res) => {
+                setHabitos(res.data)
+                console.log(res.data)
+            })
+            .catch((err) => console.log(err.response.data))
+    }, [])
 
     return(
         <PageUser>
             <Navbar/>
             <AddHabits>
                 <p>Meus hábitos</p>
-                <button>+</button>
+                <button onClick={() => setCadastro(true)}>+</button>
             </AddHabits>
+            <CadastroHabito cadastro={cadastro} setCadastro={setCadastro}/>
             <Habits>
                 <div>
                     <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
