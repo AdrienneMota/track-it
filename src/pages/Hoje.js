@@ -2,8 +2,27 @@ import Navbar from "../components/Navbar"
 import { PageUser } from "../components/PageContainer"
 import styled from "styled-components"
 import certo from "../assets/img/certo.png"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { BASEURL } from "../constant/urls"
 
 export default function Hoje(){
+    const token = localStorage.getItem("token")
+    const [habitoshoje, setHabitoshoje] = useState(undefined)
+
+    useEffect( () => {
+        axios.get(`${BASEURL}/habits/today`, { headers : {"Authorization" : `Bearer ${JSON.parse(token)}`}})
+            .then((res) => {
+                setHabitoshoje(res.data)
+            })
+            .catch((err) => console.log(err.response.data))
+    }, [habitoshoje])
+
+
+    if(!habitoshoje){
+        return <div>Carregando habitos de hoje</div>
+    }
+
     return(
         <PageUser>
             <Navbar/>
@@ -11,18 +30,22 @@ export default function Hoje(){
                 <p>Segunda, dd/mm/aaaa</p>
                 <span>Nenhum habito concluido</span>
             </Day>
-            <Habito>
-                <div>
-                    <p>Nome do habito</p>
-                    <Detalhes>
-                        <p>Sequencia atual: 4 dias</p>
-                        <p>Seu recorde: 5 dias</p>
-                    </Detalhes>
-                </div>
-                <button>
-                    <img src={certo} alt="certo"/>
-                </button>
-            </Habito>
+            {
+                habitoshoje.map( (h, i) =>
+                    <Habito key = {i}>
+                        <div>
+                            <p>{h.name}</p>
+                            <Detalhes>
+                                <p>Sequencia atual: {h.currentSequence} dias</p>
+                                <p>Seu recorde: {h.highestSequence} dias</p>
+                            </Detalhes>
+                        </div>
+                        <button>
+                            <img src={certo} alt="certo"/>
+                        </button>
+                </Habito>
+                )
+            }       
         </PageUser>
     )
 }
